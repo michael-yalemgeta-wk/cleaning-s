@@ -1,16 +1,22 @@
 import Link from "next/link";
-import fs from 'fs/promises';
-import path from 'path';
+import { prisma } from '@/lib/prisma';
 import { Sparkles } from 'lucide-react';
 import { getEmbedLink } from '@/utils/imageUtils';
 
 // Direct data access since we are on the server
 async function getServices() {
   try {
-    const filePath = path.join(process.cwd(), 'data', 'services.json');
-    const data = await fs.readFile(filePath, 'utf-8');
-    return JSON.parse(data);
+    const services = await prisma.service.findMany({
+      orderBy: { price: 'asc' }
+    });
+    // Convert Decimal to number for the component
+    return services.map(s => ({
+      ...s,
+      price: Number(s.price),
+      active: true // Default to active if not present, though DB call should return all
+    }));
   } catch (error) {
+    console.error('Failed to fetch services:', error);
     return [];
   }
 }
