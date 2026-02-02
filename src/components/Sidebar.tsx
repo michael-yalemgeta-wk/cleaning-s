@@ -104,6 +104,60 @@ export default function Sidebar({ role }: { role: 'admin' | 'owner' }) {
         <LogOut size={20} />
         Logout
       </button>
+
+      <DbStatus />
+    </div>
+  );
+}
+
+function DbStatus() {
+  const [status, setStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
+
+  useEffect(() => {
+    checkDb();
+    const interval = setInterval(checkDb, 30000); // Poll every 30s
+    return () => clearInterval(interval);
+  }, []);
+
+  const checkDb = async () => {
+    try {
+      const res = await fetch('/api/health');
+      if (res.ok) {
+        setStatus('connected');
+      } else {
+        setStatus('disconnected');
+      }
+    } catch (e) {
+      setStatus('disconnected');
+    }
+  };
+
+  const getColor = () => {
+    if (status === 'checking') return '#fbbf24'; // yellow
+    if (status === 'connected') return '#22c55e'; // green
+    return '#ef4444'; // red
+  };
+
+  return (
+    <div style={{ 
+        padding: '0.5rem 1rem', 
+        fontSize: '0.75rem', 
+        color: 'var(--text-muted)', 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: '0.5rem',
+        borderTop: '1px solid rgba(255,255,255,0.1)',
+        marginTop: '0.5rem'
+    }}>
+      <div style={{ 
+          width: '8px', 
+          height: '8px', 
+          borderRadius: '50%', 
+          opacity: 0.8,
+          backgroundColor: getColor(),
+          boxShadow: `0 0 5px ${getColor()}`
+      }} />
+      <span>DB: {status.charAt(0).toUpperCase() + status.slice(1)}</span>
     </div>
   );
 }

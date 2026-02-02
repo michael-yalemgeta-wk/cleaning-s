@@ -43,11 +43,94 @@ export default function ServicesPage() {
     setServices(newServices);
   };
 
+  const [showCreate, setShowCreate] = useState(false);
+  const [newService, setNewService] = useState({
+      title: '',
+      description: '',
+      price: 0,
+      imageUrl: '',
+      duration: '1h'
+  });
+
   if (loading) return <div className="section container">Loading...</div>;
+
+  const handleCreate = async () => {
+      if (!newService.title || !newService.price) {
+          alert("Title and Price are required!");
+          return;
+      }
+
+      await fetch("/api/services", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newService),
+      });
+
+      setShowCreate(false);
+      setNewService({ title: '', description: '', price: 0, imageUrl: '', duration: '1h' });
+      fetchServices();
+  };
 
   return (
     <div className="section container">
-      <h1 className="mb-lg">Manage Services</h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <h1>Manage Services</h1>
+          <button className="btn btn-primary" onClick={() => setShowCreate(true)}>
+              + Add Service
+          </button>
+      </div>
+      
+      {showCreate && (
+          <div style={{
+              position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+              background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              zIndex: 1000
+          }}>
+              <div style={{ background: 'var(--surface)', padding: '2rem', borderRadius: 'var(--radius-md)', width: '400px', maxWidth: '90%' }}>
+                  <h2 style={{ marginBottom: '1rem' }}>Add New Service</h2>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      <input 
+                          placeholder="Service Title" 
+                          value={newService.title}
+                          onChange={(e) => setNewService({...newService, title: e.target.value})}
+                          style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--text)' }}
+                      />
+                      <textarea 
+                          placeholder="Description" 
+                          value={newService.description}
+                          onChange={(e) => setNewService({...newService, description: e.target.value})}
+                          rows={3}
+                          style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--text)' }}
+                      />
+                      <div style={{ display: 'flex', gap: '1rem' }}>
+                          <input 
+                              type="number"
+                              placeholder="Price ($)" 
+                              value={newService.price || ''}
+                              onChange={(e) => setNewService({...newService, price: parseFloat(e.target.value)})}
+                              style={{ flex: 1, padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--text)' }}
+                          />
+                          <input 
+                              placeholder="Duration" 
+                              value={newService.duration}
+                              onChange={(e) => setNewService({...newService, duration: e.target.value})}
+                              style={{ flex: 1, padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--text)' }}
+                          />
+                      </div>
+                      <input 
+                          placeholder="Image URL (optional)" 
+                          value={newService.imageUrl}
+                          onChange={(e) => setNewService({...newService, imageUrl: e.target.value})}
+                          style={{ padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', background: 'var(--background)', color: 'var(--text)' }}
+                      />
+                      <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                          <button className="btn btn-primary" style={{ flex: 1 }} onClick={handleCreate}>Create</button>
+                          <button className="btn btn-secondary" style={{ flex: 1 }} onClick={() => setShowCreate(false)}>Cancel</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      )}
       <div className="card" style={{ overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
             <thead>

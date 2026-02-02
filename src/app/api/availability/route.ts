@@ -1,44 +1,32 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
-
-const BOOKINGS_FILE = path.join(process.cwd(), 'data', 'bookings.json');
-
-async function getBookings() {
-  try {
-    const data = await fs.readFile(BOOKINGS_FILE, 'utf-8');
-    return JSON.parse(data);
-  } catch (error) {
-    return [];
-  }
-}
+import { prisma } from '@/lib/prisma';
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const staffId = searchParams.get('staffId');
     const date = searchParams.get('date');
-    const time = searchParams.get('time');
 
-    if (!staffId || !date || !time) {
-      return NextResponse.json({ error: 'Missing parameters' }, { status: 400 });
+    if (!date) {
+      return NextResponse.json({ error: 'Date is required' }, { status: 400 });
     }
 
-    const bookings = await getBookings();
-    
-    // Check if staff member has a booking at this time
-    const conflictingBooking = bookings.find((b: any) => 
-      b.assignedTo === staffId && 
-      b.date === date && 
-      b.time === time &&
-      b.status !== 'Completed' &&
-      b.status !== 'Cancelled'
-    );
+    // Default basic timeslots
+    const defaultSlots = ["09:00", "10:00", "11:00", "13:00", "14:00", "15:00", "16:00"];
 
-    return NextResponse.json({
-      available: !conflictingBooking,
-      conflictingBooking: conflictingBooking || null
+    // Get bookings for this date
+    const bookings = await prisma.booking.findMany({
+      where: { date },
+      select: { time: true },
     });
+        
+    const bookedTimes = bookings.map((b: { time: string | null }) => b.time);
+    
+    const availableSlots = defaultSlots.map(time => ({
+      time,
+      available: !bookedTimes.includes(time)
+    }));
+
+    return NextResponse.json(availableSlots);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to check availability' }, { status: 500 });
   }

@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Service {
+  id          String  @id
+  title       String
+  description String?
+  price       Decimal @db.Decimal(10, 2)
+  duration    String?
+  imageUrl    String?
+  active      Boolean @default(true)
+
+  @@map("services")
+}
+
+model Staff {
+  id                String  @id
+  name              String
+  role              String?
+  email             String?
+  status            String?
+  jobsCompleted     Int     @default(0)
+  performanceRating Decimal @default(0) @db.Decimal(3, 2)
+
+  @@map("staff")
+}
+
+model Booking {
+  id            String   @id
+  service       String?
+  date          String?
+  time          String?
+  name          String?
+  email         String?
+  phone         String?
+  address       String?
+  notes         String?
+  paymentMethod String?
+  payment       Json?
+  cleaningCode  String?
+  status        String?
+  createdAt     DateTime @default(now()) @db.Timestamptz(6)
+  assignedTo    String?
+
+  @@map("bookings")
+}
+
+model Task {
+  id          String   @id
+  title       String?
+  description String?
+  bookingId   String?
+  assignedTo  String?
+  status      String?
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("tasks")
+}
+
+model Notification {
+  id            String   @id
+  type          String?
+  title         String?
+  message       String?
+  recipient     String?
+  recipientType String?
+  priority      String?
+  createdAt     DateTime @default(now()) @db.Timestamptz(6)
+  status        String?  @default("sent")
+
+  @@map("notifications")
+}

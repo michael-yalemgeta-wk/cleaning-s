@@ -1,21 +1,15 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
+import { prisma } from '@/lib/prisma';
 
-// Helper to get path
-const DATA_FILE = path.join(process.cwd(), 'data', 'bookings.json');
-
-async function getBookings() {
+export async function GET() {
   try {
-    const data = await fs.readFile(DATA_FILE, 'utf-8');
-    return JSON.parse(data);
+    const bookings = await prisma.booking.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+    return NextResponse.json(bookings);
   } catch (error) {
-    return [];
+    return NextResponse.json([], { status: 500 });
   }
-}
-
-async function saveBookings(bookings: any[]) {
-  await fs.writeFile(DATA_FILE, JSON.stringify(bookings, null, 2));
 }
 
 export async function POST(request: Request) {
@@ -27,28 +21,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const bookings = await getBookings();
-    
     // Generate unique cleaning code
     const timestamp = Date.now();
     const randomStr = Math.random().toString(36).substring(2, 8).toUpperCase();
     const cleaningCode = `CLN-${timestamp}-${randomStr}`;
     
-    const newBooking = {
-      id: timestamp.toString(),
-      ...body,
-      cleaningCode,
-      status: 'Pending', // Pending, Confirmed, On the Way, Done
-      payment: {
-        status: 'Unpaid',
-        amount: body.payment?.amount || 0,
-        method: body.payment?.method || 'Cash'
+    const newBooking = await prisma.booking.create({
+      data: {
+        id: timestamp.toString(),
+        ...body,
+        cleaningCode,
+        status: 'Pending', 
+        payment: {
+          status: 'Unpaid',
+          amount: body.payment?.amount || 0,
+          method: body.payment?.method || 'Cash'
+        },
       },
-      createdAt: new Date().toISOString(),
-    };
-    
-    bookings.push(newBooking);
-    await saveBookings(bookings);
+    });
     
     return NextResponse.json(newBooking, { status: 201 });
   } catch (error) {
@@ -57,38 +47,39 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET() {
-  const bookings = await getBookings();
-  return NextResponse.json(bookings);
-}
-
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
     const { id, status, assignedTo, payment } = body;
     
-    if (!id) {
-       return NextResponse.json({ error: 'Missing id' }, { status: 400 });
-    }
-
-    const bookings = await getBookings();
-    const index = bookings.findIndex((b: any) => b.id === id);
+    if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
     
-    if (index === -1) {
+    // Fetch existing validation to handle partial updates properly
+    const existing = await prisma.booking.findUnique({
+      where: { id },
+    });
+        
+    if (!existing) {
        return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
     }
     
-    // Update fields if they exist in the body
-    if (status) bookings[index].status = status;
-    if (assignedTo !== undefined) bookings[index].assignedTo = assignedTo;
-    if (payment) bookings[index].payment = { ...bookings[index].payment, ...payment };
-
-    await saveBookings(bookings);
+    const updates: any = {};
+    if (status) updates.status = status;
+    if (assignedTo !== undefined) updates.assignedTo = assignedTo;
     
-    // Notifications logic (simplified for brevity, ensuring existing logic remains if needed later)
-    // In a real scenario, we'd trigger specific notifications here based on status changes like "On Way"
+    // Merge payment object if provided
+    if (payment) {
+        // @ts-ignore
+        const currentPayment = existing.payment as any || {};
+        updates.payment = { ...currentPayment, ...payment };
+    }
 
-    return NextResponse.json(bookings[index]);
+    const updated = await prisma.booking.update({
+      where: { id },
+      data: updates,
+    });
+    
+    return NextResponse.json(updated);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to update' }, { status: 500 });
   }
@@ -100,16 +91,17 @@ export async function DELETE(request: Request) {
     const id = searchParams.get('id');
     const deleteAll = searchParams.get('deleteAll');
 
-    let bookings = await getBookings();
-
     if (deleteAll === 'true') {
-      await saveBookings([]);
+      await prisma.booking.deleteMany({
+        where: { id: { not: '0' } } // effectively deletes all
+      });
       return NextResponse.json({ success: true, message: 'All bookings deleted' });
     }
 
     if (id) {
-      bookings = bookings.filter((b: any) => b.id !== id);
-      await saveBookings(bookings);
+      await prisma.booking.delete({
+        where: { id },
+      });
       return NextResponse.json({ success: true, message: 'Booking deleted' });
     }
 
