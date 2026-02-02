@@ -80,38 +80,52 @@ export default function WorkCalendar({ role, staffId }: WorkCalendarProps) {
     };
   });
 
+
   const eventStyleGetter = (event: any) => {
     let backgroundColor = '#fef3c7';
-    let color = '#92400e';
+    // Base darker color for contrast
+    let color = '#334155'; // Slate 700 default
+    let border = '1px solid #fde68a';
     
+    // Status Backgrounds
     switch(event.status) {
       case 'Confirmed':
         backgroundColor = '#dcfce7';
-        color = '#166534';
+        border = '1px solid #bbf7d0';
         break;
       case 'In Progress':
         backgroundColor = '#fef9c3';
-        color = '#854d0e';
+        border = '1px solid #fef08a';
         break;
       case 'On Way':
         backgroundColor = '#ddd6fe';
-        color = '#5b21b6';
+        border = '1px solid #c7d2fe';
         break;
       case 'Completed':
         backgroundColor = '#e2e8f0';
-        color = '#475569';
+        border = '1px solid #cbd5e1';
         break;
+    }
+
+    // Assignment Text Color Marker
+    if (!event.resource.assignedTo) {
+      color = '#ef4444'; // Red for Unassigned
+      // Optional: clearer visual
+      border = '2px dashed #fca5a5';
+    } else {
+      color = '#0f172a'; // Dark Slate for Assigned
     }
 
     return {
       style: {
         backgroundColor,
         color,
+        border,
         borderRadius: '4px',
-        border: 'none',
         display: 'block',
-        fontSize: '0.875rem',
-        fontWeight: '500'
+        fontSize: '0.85rem',
+        fontWeight: 'bold',
+        padding: '2px 4px'
       }
     };
   };
@@ -161,7 +175,7 @@ export default function WorkCalendar({ role, staffId }: WorkCalendarProps) {
               <strong>Email:</strong> {selectedEvent.resource.email}
             </div>
             <div>
-              <strong>Phone:</strong> {selectedEvent.resource.phone}
+              <strong>Phone:</strong> {selectedEvent.resource.phone || "N/A"}
             </div>
             <div>
               <strong>Address:</strong> {selectedEvent.resource.address}
@@ -169,24 +183,35 @@ export default function WorkCalendar({ role, staffId }: WorkCalendarProps) {
             <div>
               <strong>Date & Time:</strong> {selectedEvent.resource.date} at {selectedEvent.resource.time}
             </div>
-            <div>
-              <strong>Status:</strong>{' '}
-              <span style={{
-                padding: '0.25rem 0.75rem',
-                borderRadius: '1rem',
-                fontSize: '0.875rem',
-                background: selectedEvent.status === 'Confirmed' ? '#dcfce7' : selectedEvent.status === 'Completed' ? '#e2e8f0' : '#fef9c3',
-                color: selectedEvent.status === 'Confirmed' ? '#166534' : selectedEvent.status === 'Completed' ? '#475569' : '#854d0e'
-              }}>
-                {selectedEvent.status}
-              </span>
+            
+            {/* Status Badge */}
+            <div className="flex items-center gap-sm">
+               <strong>Status:</strong>
+               <span style={{
+                 padding: '0.25rem 0.75rem',
+                 borderRadius: '1rem',
+                 fontSize: '0.8rem',
+                 background: selectedEvent.resource.status === 'Confirmed' ? '#dcfce7' : selectedEvent.resource.status === 'Completed' ? '#e2e8f0' : selectedEvent.resource.status === 'In Progress' ? '#fef9c3' : '#fef3c7',
+                 color: selectedEvent.resource.status === 'Confirmed' ? '#166534' : selectedEvent.resource.status === 'Completed' ? '#475569' : selectedEvent.resource.status === 'In Progress' ? '#854d0e' : '#92400e',
+                 border: '1px solid var(--border)'
+               }}>
+                 {selectedEvent.resource.status}
+               </span>
             </div>
-            <div>
-              <strong>Assigned To:</strong> {selectedEvent.staff}
+
+            <div className="flex items-center gap-sm">
+               <strong>Assigned To:</strong>
+               <span style={{ 
+                 color: selectedEvent.resource.assignedTo ? 'var(--text-main)' : 'var(--danger)', 
+                 fontWeight: selectedEvent.resource.assignedTo ? 'normal' : 'bold' 
+               }}>
+                 {selectedEvent.staff}
+               </span>
             </div>
+
             {selectedEvent.resource.payment && (
-              <div>
-                <strong>Payment:</strong> ${selectedEvent.resource.payment.amount?.toFixed(2)} - {selectedEvent.resource.payment.status}
+              <div style={{ marginTop: '0.5rem', padding: '0.75rem', background: 'var(--surface-alt)', borderRadius: 'var(--radius-sm)' }}>
+                <strong>Payment:</strong> <span style={{ color: selectedEvent.resource.payment.status === 'Paid' ? 'var(--primary)' : 'inherit' }}>{selectedEvent.resource.payment.status}</span> (${selectedEvent.resource.payment.amount?.toFixed(2)})
               </div>
             )}
           </div>
@@ -195,30 +220,54 @@ export default function WorkCalendar({ role, staffId }: WorkCalendarProps) {
 
       {/* Calendar Legend */}
       <div className="card mt-md">
-        <h3 className="mb-sm">Status Legend</h3>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <div style={{ width: '20px', height: '20px', background: '#fef3c7', borderRadius: '4px' }}></div>
-            <span>Pending</span>
+        <h3 className="mb-sm">Legend</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          
+          {/* Status Colors */}
+          <div>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.5rem' }}>Status (Background Color)</span>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ width: '20px', height: '20px', background: '#fef3c7', borderRadius: '4px', border: '1px solid #fde68a' }}></div>
+                <span>Pending</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ width: '20px', height: '20px', background: '#dcfce7', borderRadius: '4px', border: '1px solid #bbf7d0' }}></div>
+                <span>Confirmed</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ width: '20px', height: '20px', background: '#ddd6fe', borderRadius: '4px', border: '1px solid #c7d2fe' }}></div>
+                <span>On Way</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ width: '20px', height: '20px', background: '#fef9c3', borderRadius: '4px', border: '1px solid #fef08a' }}></div>
+                <span>In Progress</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ width: '20px', height: '20px', background: '#e2e8f0', borderRadius: '4px', border: '1px solid #cbd5e1' }}></div>
+                <span>Completed</span>
+              </div>
+            </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <div style={{ width: '20px', height: '20px', background: '#dcfce7', borderRadius: '4px' }}></div>
-            <span>Confirmed</span>
+
+          {/* Assignment Text Colors */}
+          <div>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.5rem' }}>Assignment (Text Color)</span>
+            <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                 <span style={{ fontWeight: 'bold', color: '#0f172a' }}>Abc</span>
+                 <span>Assigned</span>
+               </div>
+               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                 <span style={{ fontWeight: 'bold', color: '#ef4444' }}>Abc</span>
+                 <span>Unassigned</span>
+               </div>
+            </div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <div style={{ width: '20px', height: '20px', background: '#ddd6fe', borderRadius: '4px' }}></div>
-            <span>On Way</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <div style={{ width: '20px', height: '20px', background: '#fef9c3', borderRadius: '4px' }}></div>
-            <span>In Progress</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <div style={{ width: '20px', height: '20px', background: '#e2e8f0', borderRadius: '4px' }}></div>
-            <span>Completed</span>
-          </div>
+
         </div>
       </div>
     </>
   );
 }
+

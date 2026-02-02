@@ -132,19 +132,46 @@ export default function OwnerDashboard() {
           </div>
         </div>
 
-        {/* Staff Performance */}
-        <div className="card">
-          <h3 className="mb-md">Staff Performance</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {staffPerformance.sort((a: any, b: any) => b.jobsCompleted - a.jobsCompleted).slice(0, 5).map((member: any) => (
-              <div key={member.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem', background: 'var(--surface-alt)', borderRadius: 'var(--radius-sm)' }}>
-                <div>
-                  <p style={{ fontWeight: '500', marginBottom: '0.25rem' }}>{member.name}</p>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{member.jobsCompleted} jobs completed</p>
+        {/* Staff Performance & Job Lists */}
+        <div className="card" style={{ gridColumn: '1 / -1' }}>
+          <h3 className="mb-md">Staff Performance & Job History</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
+            {staffPerformance.map((member: any) => (
+              <div key={member.id} style={{ 
+                padding: '1rem', 
+                background: 'var(--surface-alt)', 
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid var(--border)'
+              }}>
+                <div className="flex justify-between items-start mb-sm">
+                  <div>
+                    <h4 style={{ fontSize: '1.1rem' }}>{member.name}</h4>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{member.role}</p>
+                  </div>
+                  <div className="text-right">
+                    <span style={{ fontWeight: 'bold', color: 'var(--primary)', display: 'block' }}>${member.revenue.toFixed(0)}</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Revenue</span>
+                  </div>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <p style={{ fontWeight: 'bold', color: 'var(--primary)' }}>${member.revenue.toFixed(0)}</p>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>revenue</p>
+
+                <div className="flex gap-md mb-md" style={{ fontSize: '0.9rem' }}>
+                   <div>
+                     <span style={{ fontWeight: 'bold' }}>{member.jobsCompleted}</span> <span className="text-muted">Completed</span>
+                   </div>
+                   {/* We might need to fetch assigned count separately or pass it down, for now assume analytics provides completed. 
+                       If we want detailed lists, we need the bookings data. 
+                       The current component only fetches analytics. 
+                       I should updated owner dashboard to also fetch bookings to list them.
+                   */}
+                </div>
+                
+                {/* Visual Indicator of load */}
+                <div style={{ width: '100%', height: '6px', background: '#e2e8f0', borderRadius: '3px', overflow: 'hidden' }}>
+                   <div style={{ 
+                     width: `${Math.min(member.jobsCompleted * 5, 100)}%`, // Arbitrary scale
+                     height: '100%', 
+                     background: 'var(--success)' 
+                   }}></div>
                 </div>
               </div>
             ))}

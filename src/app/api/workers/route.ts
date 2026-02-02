@@ -58,10 +58,36 @@ export async function PUT(request: Request) {
   try {
     const body = await request.json();
     let workers = await getWorkers();
-    workers = workers.map((w: any) => w.id === body.id ? { ...w, ...body } : w);
+    
+    // If password reset request
+    if (body.newPassword) {
+       workers = workers.map((w: any) => 
+         w.staffId === body.staffId ? { ...w, password: body.newPassword } : w
+       );
+    } else {
+       workers = workers.map((w: any) => w.id === body.id ? { ...w, ...body } : w);
+    }
+    
     await saveWorkers(workers);
     return NextResponse.json({ success: true });
   } catch (err) {
     return NextResponse.json({ error: 'Failed to update worker' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const staffId = searchParams.get('staffId');
+    
+    if (!staffId) return NextResponse.json({ error: 'Missing Staff ID' }, { status: 400 });
+
+    let workers = await getWorkers();
+    workers = workers.filter((w: any) => w.staffId !== staffId);
+    await saveWorkers(workers);
+    
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    return NextResponse.json({ error: 'Failed to delete worker' }, { status: 500 });
   }
 }

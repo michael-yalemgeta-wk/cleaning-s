@@ -98,13 +98,17 @@ export default function WorkerDashboard() {
           </div>
         ) : (
           <>
-            {/* Assigned Bookings */}
+            {/* Assigned Jobs & History */}
             {bookings.length > 0 && (
               <div className="mb-lg">
-                <h3 className="mb-md">Assigned Jobs</h3>
-                <div className="grid-3">
-                  {bookings.map((booking) => (
-                    <div key={booking.id} className="card">
+                <h3 className="mb-md">My Jobs</h3>
+                
+                {/* Active Jobs */}
+                <h4 className="mb-sm text-muted uppercase text-sm">Active</h4>
+                <div className="grid-3 mb-md">
+                  {bookings.filter(b => b.status !== 'Completed').length === 0 && <p className="text-muted italic">No active jobs.</p>}
+                  {bookings.filter(b => b.status !== 'Completed').map((booking) => (
+                    <div key={booking.id} className="card" style={{ borderLeft: '4px solid var(--primary)' }}>
                       <div className="flex justify-between items-center mb-md">
                         <h4>{booking.service}</h4>
                         <span style={{ 
@@ -125,6 +129,30 @@ export default function WorkerDashboard() {
                           Note: {booking.notes}
                         </p>
                       )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Completed History */}
+                <h4 className="mb-sm text-muted uppercase text-sm">History (Completed)</h4>
+                <div className="grid-3">
+                  {bookings.filter(b => b.status === 'Completed').length === 0 && <p className="text-muted italic">No completed jobs yet.</p>}
+                  {bookings.filter(b => b.status === 'Completed').map((booking) => (
+                    <div key={booking.id} className="card" style={{ opacity: 0.8 }}>
+                      <div className="flex justify-between items-center mb-md">
+                        <h4 style={{ textDecoration: 'line-through' }}>{booking.service}</h4>
+                        <span style={{ 
+                          padding: '0.25rem 0.75rem', 
+                          borderRadius: '1rem', 
+                          fontSize: '0.875rem',
+                          background: '#e2e8f0',
+                          color: '#475569'
+                        }}>
+                          Completed
+                        </span>
+                      </div>
+                      <p style={{ marginBottom: '0.5rem' }}><strong>Customer:</strong> {booking.name}</p>
+                      <p style={{ marginBottom: '0.5rem' }}><strong>Date:</strong> {booking.date}</p>
                     </div>
                   ))}
                 </div>

@@ -29,10 +29,16 @@ export async function POST(request: Request) {
 
     const bookings = await getBookings();
     
+    // Generate unique cleaning code
+    const timestamp = Date.now();
+    const randomStr = Math.random().toString(36).substring(2, 8).toUpperCase();
+    const cleaningCode = `CLN-${timestamp}-${randomStr}`;
+    
     const newBooking = {
-      id: Date.now().toString(),
+      id: timestamp.toString(),
       ...body,
-      status: 'Pending', // Pending, Confirmed, Completed
+      cleaningCode,
+      status: 'Pending', // Pending, Confirmed, On the Way, Done
       createdAt: new Date().toISOString(),
     };
     

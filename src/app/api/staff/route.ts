@@ -39,10 +39,27 @@ export async function PUT(request: Request) {
     try {
         const body = await request.json();
         let staff = await getStaff();
-        staff = staff.map((s: any) => s.id === body.id ? body : s);
+        staff = staff.map((s: any) => s.id === body.id ? { ...s, ...body } : s);
         await saveStaff(staff);
         return NextResponse.json({ success: true });
       } catch (err) {
         return NextResponse.json({ error: 'Failed to update staff' }, { status: 500 });
       }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    
+    if (!id) return NextResponse.json({ error: 'Missing ID' }, { status: 400 });
+
+    let staff = await getStaff();
+    staff = staff.filter((s: any) => s.id !== id);
+    await saveStaff(staff);
+    
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    return NextResponse.json({ error: 'Failed to delete staff' }, { status: 500 });
+  }
 }
