@@ -109,7 +109,8 @@ export default function NotificationCenter() {
                 key={notif.id} 
                 style={{ 
                   padding: '1rem', 
-                  border: '1px solid var(--border)', 
+                  border: notif.priority === 'critical' ? '1px solid #fca5a5' : '1px solid var(--border)', 
+                  background: notif.priority === 'critical' ? '#fef2f2' : notif.priority === 'high' ? '#fff7ed' : 'var(--surface)',
                   borderRadius: 'var(--radius-sm)',
                   display: 'flex',
                   gap: '1rem',
@@ -118,21 +119,21 @@ export default function NotificationCenter() {
               >
                 <div style={{ 
                   padding: '0.75rem', 
-                  background: 'var(--surface-alt)', 
+                  background: notif.priority === 'critical' ? '#fee2e2' : 'var(--surface-alt)', 
                   borderRadius: '50%',
-                  color: 'var(--primary)'
+                  color: notif.priority === 'critical' ? '#b91c1c' : 'var(--primary)'
                 }}>
                   {getIcon(notif.type)}
                 </div>
                 <div style={{ flexGrow: 1 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                    <h4>{notif.title}</h4>
+                    <h4 style={{ color: notif.priority === 'critical' ? '#b91c1c' : 'inherit' }}>{notif.title}</h4>
                     <span style={{ 
                       fontSize: '0.875rem', 
                       color: 'var(--text-muted)',
                       whiteSpace: 'nowrap'
                     }}>
-                      {new Date(notif.createdAt).toLocaleString()}
+                      {notif.id.startsWith('alert') ? 'Now' : new Date(notif.createdAt).toLocaleString()}
                     </span>
                   </div>
                   <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '0.5rem' }}>
@@ -148,21 +149,23 @@ export default function NotificationCenter() {
                     </span>
                     <span style={{ 
                       padding: '0.25rem 0.5rem', 
-                      background: notif.recipientType === 'customer' ? '#dbeafe' : '#fef3c7',
-                      color: notif.recipientType === 'customer' ? '#1e40af' : '#92400e',
+                      background: notif.recipientType === 'system' ? '#f3e8ff' : notif.recipientType === 'customer' ? '#dbeafe' : '#fef3c7',
+                      color: notif.recipientType === 'system' ? '#6b21a8' : notif.recipientType === 'customer' ? '#1e40af' : '#92400e',
                       borderRadius: 'var(--radius-sm)',
                       fontWeight: '500'
                     }}>
-                      {notif.recipientType === 'customer' ? '👤 Customer' : '👨‍💼 Staff'}
+                      {notif.recipientType === 'customer' ? '👤 Customer' : notif.recipientType === 'system' ? '🤖 System' : '👨‍💼 Staff'}
                     </span>
-                    <span style={{ 
-                      padding: '0.25rem 0.5rem', 
-                      background: '#dcfce7',
-                      color: '#166534',
-                      borderRadius: 'var(--radius-sm)' 
-                    }}>
-                      ✓ Sent
-                    </span>
+                    {notif.recipientType !== 'system' && (
+                        <span style={{ 
+                        padding: '0.25rem 0.5rem', 
+                        background: '#dcfce7',
+                        color: '#166534',
+                        borderRadius: 'var(--radius-sm)' 
+                        }}>
+                        ✓ Sent
+                        </span>
+                    )}
                   </div>
                 </div>
               </div>

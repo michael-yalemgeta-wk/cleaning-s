@@ -1,193 +1,9 @@
 [
   {
-    "id": "1769077732314",
-    "service": "standard",
-    "date": "2026-02-22",
-    "time": "08:00",
-    "name": "spotifyacc ",
-    "email": "spotifyacc12837@gmail.com",
-    "phone": "916512165165",
-    "address": "fdzfdafa",
-    "notes": "",
-    "status": "On Way",
-    "createdAt": "2026-01-22T10:28:52.314Z",
-    "assignedTo": ""
-  },
-  {
-    "id": "1769079248875",
-    "service": "carpet",
-    "date": "2026-01-30",
-    "time": "10:00",
-    "name": "spotifyacc12837@gmail.com's Org",
-    "email": "spotifyacc12837@gmail.com",
-    "phone": "dsds",
-    "address": "ddd",
-    "notes": "ddd",
-    "status": "Completed",
-    "createdAt": "2026-01-22T10:54:08.875Z"
-  },
-  {
-    "id": "1769080364674",
-    "service": "office",
-    "date": "2026-02-07",
-    "time": "14:00",
-    "name": "spotifyacc12837@gmail.com's Org",
-    "email": "spotifyacc12837@gmail.com",
-    "phone": "dsds",
-    "address": "fddf",
-    "notes": "",
-    "status": "Pending",
-    "createdAt": "2026-01-22T11:12:44.674Z",
-    "assignedTo": "",
-    "payment": {
-      "status": "Paid"
-    }
-  },
-  {
-    "id": "1769081141228",
-    "service": "standard",
-    "date": "2026-01-29",
-    "time": "10:00",
-    "name": "spotifyacc12837@gmail.com's Org",
-    "email": "spotifyacc12837@gmail.com",
-    "phone": "dsds",
-    "address": "d",
-    "notes": "dd",
-    "paymentMethod": "cash",
-    "payment": {
-      "method": "cash",
-      "amount": 106.92,
-      "status": "Pending"
-    },
-    "status": "Pending",
-    "createdAt": "2026-01-22T11:25:41.228Z",
-    "assignedTo": ""
-  },
-  {
-    "id": "1769624902749",
-    "service": "carpet",
-    "date": "2026-01-31",
-    "time": "10:00",
-    "name": "Michael Yalemgeta MAMO",
-    "email": "michealyalmegeta@gmail.com",
-    "phone": "251799331818",
-    "address": "Kebele 16",
-    "notes": "clean well",
-    "paymentMethod": "cash",
-    "payment": {
-      "method": "cash",
-      "amount": 96.12,
-      "status": "Paid"
-    },
-    "status": "Pending",
-    "createdAt": "2026-01-28T18:28:22.749Z",
-    "assignedTo": ""
-  },
-  {
-    "id": "1770021648566",
-    "service": "move",
-    "date": "2026-02-24",
-    "time": "10:00",
-    "name": "TSION YALEMGETA MAMO",
-    "email": "svdcbxg@telegmail.com",
-    "phone": "0910309387",
-    "address": "poly",
-    "notes": "",
-    "paymentMethod": "cash",
-    "payment": {
-      "method": "cash",
-      "amount": 268.92,
-      "status": "Paid"
-    },
-    "status": "Pending",
-    "createdAt": "2026-02-02T08:40:48.567Z",
-    "assignedTo": ""
-  },
-  {
-    "id": "1770038103756",
-    "service": "standard",
-    "date": "2026-02-04",
-    "time": "10:00",
-    "name": "TSION YALEMGETA MAMO",
-    "email": "michaelyalemgeta@gmail.com",
-    "phone": "0910309387",
-    "address": "poly",
-    "notes": "",
-    "paymentMethod": "credit_card",
-    "payment": {
-      "method": "credit_card",
-      "amount": 106.92,
-      "status": "Paid"
-    },
-    "status": "Pending",
-    "createdAt": "2026-02-02T13:15:03.756Z",
-    "assignedTo": ""
-  },
-  {
-    "id": "1770038716095",
-    "service": "carpet",
-    "date": "2026-02-11",
-    "time": "10:00",
-    "name": "ggfgf",
-    "email": "elyalemgeta@gmail.com",
-    "phone": "0910309387",
-    "address": "1212",
-    "notes": "Washington ",
-    "paymentMethod": "credit_card",
-    "payment": {
-      "method": "credit_card",
-      "amount": 96.12,
-      "status": "Paid"
-    },
-    "status": "Pending",
-    "createdAt": "2026-02-02T13:25:16.095Z",
-    "assignedTo": ""
-  },
-  {
-    "id": "1770038769989",
-    "service": "standard",
-    "date": "2026-02-04",
-    "time": "10:00",
-    "name": "TSION YALEMGETA MAMO",
-    "email": "svdcbxg@telegmail.com",
-    "phone": "0910309387",
-    "address": "poly",
-    "notes": "",
-    "paymentMethod": "credit_card",
-    "payment": {
-      "method": "credit_card",
-      "amount": 106.92,
-      "status": "Paid"
-    },
-    "status": "Pending",
-    "createdAt": "2026-02-02T13:26:09.989Z",
-    "assignedTo": ""
-  },
-  {
-    "id": "1770040597813",
+    "id": "1770047837529",
     "service": "standard",
     "date": "2026-02-02",
     "time": "16:00",
-    "name": " O",
-    "email": "ta@gmail.com",
-    "phone": "0910309387",
-    "address": "poly",
-    "notes": "",
-    "paymentMethod": "credit_card",
-    "payment": {
-      "method": "credit_card",
-      "amount": 106.92,
-      "status": "Paid"
-    },
-    "status": "Pending",
-    "createdAt": "2026-02-02T13:56:37.813Z",
-    "assignedTo": ""
-  },
-  {
-    "id": "1770042979435",
-    "service": "standard",
-    "date": "2026-02-03",
-    "time": "08:00",
     "name": "TSION YALEMGETA MAMO",
     "email": "michaelyalemgeta@gmail.com",
     "phone": "0910309387",
@@ -195,12 +11,13 @@
     "notes": "",
     "paymentMethod": "credit_card",
     "payment": {
-      "method": "credit_card",
+      "status": "Unpaid",
       "amount": 106.92,
-      "status": "Paid"
+      "method": "credit_card"
     },
-    "cleaningCode": "CLN-1770042979435-EB4WO6",
-    "status": "Pending",
-    "createdAt": "2026-02-02T14:36:19.437Z"
+    "cleaningCode": "CLN-1770047837529-EF3A0K",
+    "status": "Confirmed",
+    "createdAt": "2026-02-02T15:57:17.559Z",
+    "assignedTo": "staff-1770044945772"
   }
 ]

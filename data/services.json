@@ -34,14 +34,5 @@
     "duration": "3-4 hours",
     "imageUrl": "",
     "active": true
-  },
-  {
-    "id": "carpet",
-    "title": "Carpet Cleaning",
-    "description": "Deep steam cleaning for carpets and rugs.",
-    "price": 89,
-    "duration": "1-2 hours",
-    "imageUrl": "",
-    "active": true
   }
 ]

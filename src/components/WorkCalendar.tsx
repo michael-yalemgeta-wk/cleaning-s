@@ -29,6 +29,7 @@ export default function WorkCalendar({ role, staffId }: WorkCalendarProps) {
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {
     fetchData();
@@ -150,6 +151,8 @@ export default function WorkCalendar({ role, staffId }: WorkCalendarProps) {
           onSelectEvent={handleSelectEvent}
           views={['month', 'week', 'day']}
           defaultView="month"
+          date={currentDate}
+          onNavigate={(newDate) => setCurrentDate(newDate)}
         />
       </div>
 

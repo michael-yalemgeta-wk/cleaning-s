@@ -178,9 +178,29 @@ export default function BookingsPage() {
 
   if (loading) return <div className="container section text-center">Loading...</div>;
 
+  const deleteBooking = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this booking?")) return;
+    await fetch(`/api/bookings?id=${id}`, { method: 'DELETE' });
+    fetchData();
+  };
+
+  const deleteAllBookings = async () => {
+    if (!confirm("WARNING: Are you sure you want to DELETE ALL bookings? This action cannot be undone.")) return;
+    const secondConfirm = confirm("Please confirm again to DELETE ALL bookings.");
+    if (secondConfirm) {
+      await fetch(`/api/bookings?deleteAll=true`, { method: 'DELETE' });
+      fetchData();
+    }
+  };
+
   return (
     <div className="section container">
-      <h1 className="mb-lg">Booking Management</h1>
+      <div className="flex justify-between items-center mb-lg">
+        <h1 className="mb-lg">Booking Management</h1>
+        <button onClick={deleteAllBookings} className="btn btn-danger" style={{ background: '#fee2e2', color: '#b91c1c', border: '1px solid #fecaca' }}>
+          <LogOut size={18} /> Delete All Bookings
+        </button>
+      </div>
 
       {/* Filters & Sort Bar */}
       <div className="card mb-md" style={{ padding: '1rem' }}>
@@ -251,13 +271,14 @@ export default function BookingsPage() {
               <th style={{ padding: '1rem' }}>Customer</th>
               <th style={{ padding: '1rem' }}>Service</th>
               <th style={{ padding: '1rem' }}>Assigned To</th>
+              <th style={{ padding: '1rem' }}>Payment</th>
               <th style={{ padding: '1rem' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredBookings.length === 0 ? (
               <tr>
-                <td colSpan={7} className="text-center" style={{ padding: '2rem', color: 'var(--text-muted)' }}>No bookings found.</td>
+                <td colSpan={8} className="text-center" style={{ padding: '2rem', color: 'var(--text-muted)' }}>No bookings found.</td>
               </tr>
             ) : (
               filteredBookings.map((booking) => {
@@ -320,6 +341,47 @@ export default function BookingsPage() {
                         </select>
                       )}
                     </td>
+                    
+                    {/* Payment Column */}
+                    <td style={{ padding: '1rem' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <span style={{ 
+                          padding: '0.25rem 0.75rem', 
+                          borderRadius: '1rem', 
+                          fontSize: '0.875rem',
+                          background: booking.payment?.status === 'Paid' ? '#dcfce7' : '#fee2e2',
+                          color: booking.payment?.status === 'Paid' ? '#166534' : '#b91c1c',
+                          fontWeight: 'bold',
+                          textAlign: 'center'
+                        }}>
+                          {booking.payment?.status === 'Paid' ? '✓ Paid' : 'Unpaid'}
+                        </span>
+                        
+                        <button 
+                          onClick={async () => {
+                            const newStatus = booking.payment?.status === 'Paid' ? 'Unpaid' : 'Paid';
+                            await fetch("/api/bookings", {
+                              method: "PUT",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ id: booking.id, payment: { status: newStatus } }),
+                            });
+                            fetchData();
+                          }}
+                          className="btn" 
+                          style={{ 
+                            padding: '0.4rem 0.6rem', 
+                            fontSize: '0.75rem', 
+                            background: booking.payment?.status === 'Paid' ? '#fee2e2' : '#10b981',
+                            color: booking.payment?.status === 'Paid' ? '#b91c1c' : 'white',
+                            border: booking.payment?.status === 'Paid' ? '1px solid #fecaca' : 'none'
+                          }}
+                          title={booking.payment?.status === 'Paid' ? 'Mark as Unpaid' : 'Mark as Paid'}
+                        >
+                          {booking.payment?.status === 'Paid' ? '✕ Mark Unpaid' : '💰 Mark Paid'}
+                        </button>
+                      </div>
+                    </td>
+                    
                     <td style={{ padding: '1rem' }}>
                       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                         {/* Confirmed -> On the Way */}
@@ -346,25 +408,6 @@ export default function BookingsPage() {
                            </button>
                         )}
 
-                        {/* Mark Paid Button */}
-                        {booking.payment?.status !== 'Paid' && booking.status !== 'Pending' && (
-                           <button 
-                             onClick={async () => {
-                                 await fetch("/api/bookings", {
-                                   method: "PUT",
-                                   headers: { "Content-Type": "application/json" },
-                                   body: JSON.stringify({ id: booking.id, payment: { status: 'Paid' } }),
-                                 });
-                                 fetchData();
-                             }}
-                             className="btn" 
-                             style={{ padding: '0.5rem', fontSize: '0.875rem', background: '#10b981', color: 'white' }}
-                             title="Mark Paid"
-                           >
-                             💰 Paid
-                           </button>
-                        )}
-
                         {booking.assignedTo && booking.status !== 'Done' && (
                           <button 
                             onClick={() => {
@@ -378,6 +421,15 @@ export default function BookingsPage() {
                             <Plus size={16} /> Task
                           </button>
                         )}
+                        
+                        <button 
+                           onClick={() => deleteBooking(booking.id)}
+                           className="btn" 
+                           style={{ padding: '0.5rem', fontSize: '0.875rem', background: '#fee2e2', color: '#b91c1c' }}
+                           title="Delete"
+                        >
+                           <LogOut size={16} />
+                        </button>
                       </div>
                     </td>
                   </tr>

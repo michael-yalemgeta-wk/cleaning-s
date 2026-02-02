@@ -50,11 +50,17 @@ export default async function ServerServiceList() {
                  </div>
                )}
             </div>
-            <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{service.title}</h3>
-            <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem', flexGrow: 1 }}>{service.description}</p>
-            <div className="flex justify-between items-center">
-              <span style={{ fontWeight: 'bold', fontSize: '1.25rem', color: 'var(--primary)' }}>${service.price}</span>
-              <Link href={`/book?service=${service.id}`} className="btn btn-secondary">Select</Link>
+            <div style={{ padding: '1rem' }}>
+              <div className="flex justify-between items-center mb-sm">
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>{service.title}</h3>
+                <span className="text-primary font-bold">${service.price}</span>
+              </div>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.5', minHeight: '3em' }}>
+                {service.description || "Professional cleaning service tailored to your needs."}
+              </p>
+              <Link href={`/book?service=${encodeURIComponent(service.title)}`} className="btn btn-primary w-full mt-md">
+                Book Now
+              </Link>
             </div>
           </div>
         ))}

@@ -1,47 +1,20 @@
 [
   {
-    "id": "staff-1",
-    "name": "Sarah Jenkins",
+    "name": "worker a",
     "role": "Cleaner",
-    "email": "sarah@pristineclean.com",
-    "status": "Active",
-    "performanceRating": 4.8,
-    "jobsCompleted": 124
-  },
-  {
-    "id": "staff-2",
-    "name": "Mike Ross",
-    "role": "Supervisor",
-    "email": "mike@pristineclean.com",
-    "status": "Active",
-    "performanceRating": 4.9,
-    "jobsCompleted": 340
-  },
-  {
-    "id": "staff-3",
-    "name": "Emma Watson",
-    "role": "Cleaner",
-    "email": "emma@pristineclean.com",
-    "status": "On Leave",
-    "performanceRating": 4.7,
-    "jobsCompleted": 89
-  },
-  {
-    "name": "kb",
-    "role": "Cleaner",
-    "email": "kta@gmail.com",
+    "email": "email@male.com",
     "status": "Active",
     "jobsCompleted": 0,
     "performanceRating": 0,
-    "id": "staff-1770024756006"
+    "id": "staff-1770044945772"
   },
   {
-    "name": "d",
+    "name": "worker b",
     "role": "Cleaner",
-    "email": "d@dd",
+    "email": "email2@mail.com",
     "status": "Active",
     "jobsCompleted": 0,
     "performanceRating": 0,
-    "id": "staff-1770024865406"
+    "id": "staff-1770044983920"
   }
 ]

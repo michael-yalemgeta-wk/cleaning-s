@@ -1,37 +1,16 @@
 [
   {
-    "id": "worker1",
-    "username": "worker1",
-    "password": "worker1",
-    "staffId": "staff-1",
-    "name": "Sarah Jenkins"
+    "username": "we",
+    "password": "we",
+    "staffId": "staff-1770044945772",
+    "name": "worker a",
+    "id": "worker-1770044963856"
   },
   {
-    "username": "ff",
-    "password": "ff",
-    "staffId": "staff-2",
-    "name": "Mike Ross",
-    "id": "worker-1769080467555"
-  },
-  {
-    "username": "kb",
-    "password": "bk",
-    "staffId": "staff-1770024756006",
-    "name": "kb",
-    "id": "worker-1770024765273"
-  },
-  {
-    "username": "worked",
-    "password": "1234",
-    "staffId": "staff-3",
-    "name": "Emma Watson",
-    "id": "worker-1770024852076"
-  },
-  {
-    "username": "didy",
-    "password": "didy",
-    "staffId": "staff-1770024865406",
-    "name": "d",
-    "id": "worker-1770024874140"
+    "username": "ew",
+    "password": "ew",
+    "staffId": "staff-1770044983920",
+    "name": "worker b",
+    "id": "worker-1770044998217"
   }
 ]

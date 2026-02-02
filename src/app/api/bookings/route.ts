@@ -39,6 +39,11 @@ export async function POST(request: Request) {
       ...body,
       cleaningCode,
       status: 'Pending', // Pending, Confirmed, On the Way, Done
+      payment: {
+        status: 'Unpaid',
+        amount: body.payment?.amount || 0,
+        method: body.payment?.method || 'Cash'
+      },
       createdAt: new Date().toISOString(),
     };
     
@@ -86,5 +91,30 @@ export async function PUT(request: Request) {
     return NextResponse.json(bookings[index]);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to update' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    const deleteAll = searchParams.get('deleteAll');
+
+    let bookings = await getBookings();
+
+    if (deleteAll === 'true') {
+      await saveBookings([]);
+      return NextResponse.json({ success: true, message: 'All bookings deleted' });
+    }
+
+    if (id) {
+      bookings = bookings.filter((b: any) => b.id !== id);
+      await saveBookings(bookings);
+      return NextResponse.json({ success: true, message: 'Booking deleted' });
+    }
+
+    return NextResponse.json({ error: 'Missing id or deleteAll param' }, { status: 400 });
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to delete' }, { status: 500 });
   }
 }
